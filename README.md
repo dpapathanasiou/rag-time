@@ -8,7 +8,17 @@ This is a simple [Retrieval-Augmented Generation (RAG)](https://en.wikipedia.org
 
 ```sh
 uv init rag-time --python 3.13
-uv add langchain langchain-core langchain-community langchain-ollama langchain-text-splitters langchain-chroma chromadb sentence-transformers pypdf beautifulsoup4
+uv add langchain \
+  langchain-core \
+  langchain-community \
+  langchain-ollama \
+  langchain-text-splitters \
+  langchain-chroma \
+  chromadb \
+  sentence-transformers \
+  pypdf \
+  beautifulsoup4 \
+  chardet
 source .venv/bin/activate
 ```
 
