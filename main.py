@@ -1,6 +1,7 @@
 from pathlib import Path
 from rag import CORPUS_DIR, RAG_CHAIN, rebuild_index
 
+
 def cli():
     """Simple command line interface"""
     print("Welcome! Let's talk, ask me a question\n(Ctrl+C to exit)")

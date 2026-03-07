@@ -14,10 +14,11 @@ BASE_MODEL = OllamaLLM(model=getenv("BASE_MODEL", "gpt-oss"))
 EMBEDDINGS = OllamaEmbeddings(model=getenv("EMBED_MODEL", "embeddinggemma"))
 
 TEXT_SPLITTER = RecursiveCharacterTextSplitter(
-    chunk_size=800, 
-    chunk_overlap=100, 
+    chunk_size=800,
+    chunk_overlap=100,
     add_start_index=True
 )
+
 
 def load_corpus(corpus_folder):
     docs = []
@@ -33,13 +34,14 @@ def load_corpus(corpus_folder):
     print(f"Corpus files:\n{chr(10).join(names)}")
     return docs
 
+
 def rebuild_index(corpus_folder, text_splitter=None, vector_store=None):
     if text_splitter is None:
         text_splitter = TEXT_SPLITTER
 
     if vector_store is None:
         vector_store = VECTOR_STORE
-    
+
     # TODO: have vector_store detect if prior index has been persisted, and skip this
 
     data = text_splitter.split_documents(load_corpus(corpus_folder))
@@ -47,9 +49,10 @@ def rebuild_index(corpus_folder, text_splitter=None, vector_store=None):
     vector_store.reset_collection()
     vector_store.add_documents(data)
 
+
 VECTOR_STORE = Chroma(
-    collection_name="local_rag_corpus", 
-    embedding_function=EMBEDDINGS, 
+    collection_name="local_rag_corpus",
+    embedding_function=EMBEDDINGS,
     persist_directory=CHROMA_DIR
 )
 RETRIEVER = VECTOR_STORE.as_retriever(search_kwargs={"k": 4})
