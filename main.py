@@ -1,3 +1,5 @@
+import argparse
+
 from rag import RAGConfig, create_rag_chain, rebuild_index
 
 
@@ -17,8 +19,35 @@ def cli(rag_chain):
 
 
 if __name__ == "__main__":
-    # TODO: initialize config based on args to main
-    config = RAGConfig()
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--chunk_size", help="number of characters per chunk", type=int, default=800
+    )
+    parser.add_argument(
+        "--chunk_overlap",
+        help="size of overlap between chunks in order to maintain context",
+        type=int,
+        default=100,
+    )
+    parser.add_argument(
+        "--collection_name",
+        help="name of the corpus in the vector store",
+        type=str,
+        default="local_corpus",
+    )
+    parser.add_argument(
+        "--retrieval_keys",
+        help="number (max) of revelant chunks to retrieve",
+        type=int,
+        default=4,
+    )
+    args = parser.parse_args()
+    config = RAGConfig(
+        args.chunk_size,
+        args.chunk_overlap,
+        args.collection_name,
+        args.retrieval_keys,
+    )
     vector_store = rebuild_index(config)
     rag_chain = create_rag_chain(config)
     cli(rag_chain)
