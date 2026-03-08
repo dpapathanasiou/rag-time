@@ -2,7 +2,12 @@ from os import getenv
 from pathlib import Path
 
 from langchain_chroma import Chroma
-from langchain_community.document_loaders import PyPDFLoader, TextLoader
+from langchain_community.document_loaders import (
+    BSHTMLLoader,
+    PyPDFLoader,
+    TextLoader,
+    UnstructuredMarkdownLoader,
+)
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
@@ -58,12 +63,17 @@ def load_corpus(corpus_folder: Path):
     names = []
     for p in corpus_folder.glob("**/*"):
         file_ext = p.suffix.lower()
-        if file_ext in {".pdf", ".md", ".txt", ".text"}:
+        if file_ext in {".pdf", ".htm", ".html", ".md", ".txt", ".text"}:
             names.append(f" - {p.name}")
-            if file_ext == ".pdf":
-                docs.extend(PyPDFLoader(str(p)).load())
-            else:
-                docs.extend(TextLoader(str(p), autodetect_encoding=True).load())
+            match file_ext:
+                case ".pdf":
+                    docs.extend(PyPDFLoader(str(p)).load())
+                case ".htm" | ".html":
+                    docs.extend(BSHTMLLoader(str(p)).load())
+                case ".md":
+                    docs.extend(UnstructuredMarkdownLoader(str(p)).load())
+                case _:
+                    docs.extend(TextLoader(str(p), autodetect_encoding=True).load())
 
     print(f"Corpus files:\n{chr(10).join(names)}\n")
     return docs
