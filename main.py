@@ -48,6 +48,7 @@ if __name__ == "__main__":
         args.collection_name,
         args.retrieval_keys,
     )
+    print(config)
     vector_store = rebuild_index(config)
     rag_chain = create_rag_chain(config)
     cli(rag_chain)
