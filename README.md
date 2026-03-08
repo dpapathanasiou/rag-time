@@ -40,12 +40,26 @@ export BASE_MODEL="gpt-oss"
 export EMBED_MODEL="embeddinggemma"
 ```
 
-Copy the RAG corpus documents into the folder defined by `$CORPUS_DIR`, and start the cli:
+Copy the RAG corpus documents (text, pdf, markdown, and html are all acceptable formats) into the folder defined by `$CORPUS_DIR` , and start the cli:
 
 ```sh
+source .venv/bin/activate # if the enviroment is not already active
 uv run main.py
+
+RAGConfig:
+        CORPUS_DIR	= .corpus
+        CHROMA_DIR	= .chroma_db
+
+        Base Model	= gpt-oss
+        Embed Model	= embeddinggemma
+
+        chunk_size	= 800
+        chunk_overlap	= 100
+        collection_name	= local_corpus
+        retrieval_keys	= 4
+
 Corpus files:
-    ...[listed line by line here, text and pdf]...
+    ...[listed line by line here]...
 Welcome! Let's talk, ask me a question
 (Ctrl+C to exit)
 
