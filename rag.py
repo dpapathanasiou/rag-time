@@ -25,13 +25,13 @@ def load_corpus(corpus_folder):
     names = []
     for p in corpus_folder.glob("**/*"):
         if p.suffix.lower() == ".pdf":
-            names.append(p.name)
+            names.append(f" - {p.name}")
             docs.extend(PyPDFLoader(str(p)).load())
         elif p.suffix.lower() in {".md", ".txt", ".text"}:
-            names.append(p.name)
+            names.append(f" - {p.name}")
             docs.extend(TextLoader(str(p), autodetect_encoding=True).load())
 
-    print(f"Corpus files:\n{chr(10).join(names)}")
+    print(f"Corpus files:\n{chr(10).join(names)}\n")
     return docs
 
 
