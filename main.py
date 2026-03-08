@@ -1,8 +1,7 @@
-from pathlib import Path
-from rag import CORPUS_DIR, RAG_CHAIN, rebuild_index
+from rag import RAGConfig, create_rag_chain, rebuild_index
 
 
-def cli():
+def cli(rag_chain):
     """Simple command line interface"""
     print("Welcome! Let's talk, ask me a question\n(Ctrl+C to exit)")
     while True:
@@ -10,7 +9,7 @@ def cli():
             q = input("\n> ")
             if not q.strip():
                 continue
-            answer = RAG_CHAIN.invoke(q)
+            answer = rag_chain.invoke(q)
             print(f"\n{answer}\n")
         except KeyboardInterrupt:
             print("\nGoodbye!")
@@ -18,9 +17,8 @@ def cli():
 
 
 if __name__ == "__main__":
-    corpus = Path(CORPUS_DIR)
-    if not corpus.exists():
-        corpus.mkdir(parents=True, exist_ok=True)
-    rebuild_index(corpus)
-
-    cli()
+    # TODO: initialize config based on args to main
+    config = RAGConfig()
+    vector_store = rebuild_index(config)
+    rag_chain = create_rag_chain(config)
+    cli(rag_chain)
