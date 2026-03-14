@@ -40,6 +40,8 @@ export BASE_MODEL="gpt-oss"
 export EMBED_MODEL="embeddinggemma"
 ```
 
+*[Can I Run AI locally?](https://www.canirun.ai/)* is a useful resource for choosing models appropriate to the hardware being used.
+
 Copy the RAG corpus documents (text, pdf, markdown, and html are all acceptable formats) into the folder defined by `$CORPUS_DIR` , and start the cli:
 
 ```sh
