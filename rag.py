@@ -98,12 +98,16 @@ def load_corpus(corpus_folder: Path):
     return docs
 
 
-def rebuild_index(config: RAGConfig):
-    text_splitter = config.text_splitter
+def rebuild_index(config: RAGConfig, force=False):
     vector_store = config.vector_store
 
-    # TODO: have vector_store detect if prior index has been persisted, and skip this
+    index = vector_store.get()
+    if not force:
+        if index["ids"]:
+            print("Corpus already exists and is not empty, skipping rebuild")
+            return
 
+    text_splitter = config.text_splitter
     data = text_splitter.split_documents(load_corpus(config.corpus_path))
 
     vector_store.reset_collection()

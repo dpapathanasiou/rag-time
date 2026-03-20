@@ -41,6 +41,12 @@ if __name__ == "__main__":
         type=int,
         default=4,
     )
+    parser.add_argument(
+        "--force_index_rebuild",
+        help="rebuild the corpus index, regardless of whether or not it already exists",
+        type=bool,
+        default=False,
+    )
     args = parser.parse_args()
     config = RAGConfig(
         args.chunk_size,
@@ -49,6 +55,6 @@ if __name__ == "__main__":
         args.retrieval_keys,
     )
     print(config)
-    vector_store = rebuild_index(config)
+    vector_store = rebuild_index(config, force=args.force_index_rebuild)
     rag_chain = create_rag_chain(config)
     cli(rag_chain)
