@@ -3,11 +3,13 @@ name = "rag-time"
 version = "0.1.0"
 description = "This is a simple Retrieval-augmented generation (RAG) application, to complement any locally-running Ollama model"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.14"
 dependencies = [
     "beautifulsoup4>=4.14.3",
     "chardet>=7.0.1",
     "chromadb>=1.5.3",
+    "cython>=3.2.4",
+    "esprima>=4.0.1",
     "langchain>=1.2.10",
     "langchain-chroma>=1.1.0",
     "langchain-community>=0.4.1",
@@ -16,4 +18,12 @@ dependencies = [
     "langchain-text-splitters>=1.1.1",
     "pypdf>=6.7.5",
     "sentence-transformers>=5.2.3",
+    "tree-sitter>=0.25.2",
+    "tree-sitter-languages",
 ]
+
+[tool.uv.extra-build-dependencies]
+tree-sitter-languages = ["Cython"]
+
+[tool.uv.sources]
+tree-sitter-languages = { git = "https://github.com/grantjenks/py-tree-sitter-languages" }

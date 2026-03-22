@@ -8,11 +8,46 @@ from langchain_community.document_loaders import (
     TextLoader,
     UnstructuredMarkdownLoader,
 )
+from langchain_community.document_loaders.generic import GenericLoader
+from langchain_community.document_loaders.parsers import LanguageParser
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from langchain_ollama import OllamaEmbeddings, OllamaLLM
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+
+SUPPORTED_SOURCE_CODE = [
+    ".c",  # Language.C,
+    ".h",  # Language.C,
+    ".cbl",  # Language.COBOL,
+    ".cob",  # Language.COBOL,
+    ".cpy",  # Language.COBOL,
+    ".cs",  # Language.CSHARP,
+    ".cpp",  # Language.CPP,
+    ".ex",  # Language.ELIXIR,
+    ".exs",  # Language.ELIXIR,
+    ".go",  # Language.GO,
+    ".hs",  # Language.HASKELL,
+    ".java",  # Language.JAVA,
+    ".js",  # Language.JS,
+    ".jsx",  # Language.JS,
+    ".json",  # Language.JS,
+    ".kt",  # Language.KOTLIN,
+    ".lua",  # Language.LUA,
+    ".php",  # Language.PHP,
+    ".pl",  # Language.PERL,
+    ".py",  # Language.PYTHON,
+    ".r",  # Language.R,
+    ".rst",  # Language.RST,
+    ".rb",  # Language.RUBY,
+    ".rs",  # Language.RUST,
+    ".scala",  # Language.SCALA,
+    ".swift",  # Language.SWIFT,
+    ".tex",  # Language.LATEX,
+    ".latex",  # Language.LATEX,
+    ".ts",  # Language.TS,
+    ".tsx",  # Language.TS,
+]
 
 
 class RAGConfig:
@@ -82,18 +117,22 @@ def load_corpus(corpus_folder: Path):
     names = []
     for p in corpus_folder.glob("**/*"):
         file_ext = p.suffix.lower()
-        if file_ext in {".pdf", ".htm", ".html", ".md", ".txt", ".text"}:
+        if file_ext in SUPPORTED_SOURCE_CODE:
+            names.append(f" - {p.name}")
+            docs.extend(
+                GenericLoader.from_filesystem(p, parser=LanguageParser()).load()
+            )
+        elif file_ext in {".pdf", ".css", ".htm", ".html", ".md", ".txt", ".text"}:
             names.append(f" - {p.name}")
             match file_ext:
                 case ".pdf":
-                    docs.extend(PyPDFLoader(str(p)).load())
-                case ".htm" | ".html":
-                    docs.extend(BSHTMLLoader(str(p)).load())
+                    docs.extend(PyPDFLoader(p).load())
+                case ".css" | ".htm" | ".html":
+                    docs.extend(BSHTMLLoader(p).load())
                 case ".md":
-                    docs.extend(UnstructuredMarkdownLoader(str(p)).load())
+                    docs.extend(UnstructuredMarkdownLoader(p).load())
                 case _:
-                    docs.extend(TextLoader(str(p), autodetect_encoding=True).load())
-
+                    docs.extend(TextLoader(p, autodetect_encoding=True).load())
     print(f"Corpus files:\n{chr(10).join(names)}\n")
     return docs
 
@@ -108,6 +147,7 @@ def rebuild_index(config: RAGConfig, force=False):
             return
 
     text_splitter = config.text_splitter
+    # TODO: use a more appropriate splitter by doc type (https://docs.langchain.com/oss/python/integrations/document_loaders/source_code#splitting)
     data = text_splitter.split_documents(load_corpus(config.corpus_path))
 
     vector_store.reset_collection()

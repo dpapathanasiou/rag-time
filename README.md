@@ -7,7 +7,7 @@ This is a simple [Retrieval-Augmented Generation (RAG)](https://en.wikipedia.org
 *Only needed if ever want to recreate from scratch, without using the current [uv.lock](uv.lock)* - create a [uv project](https://docs.astral.sh/uv/#project-structure) as follows:
 
 ```sh
-uv init rag-time --python 3.13
+uv init rag-time --python 3.14
 uv add langchain \
   langchain-core \
   langchain-community \
@@ -18,7 +18,10 @@ uv add langchain \
   sentence-transformers \
   pypdf \
   beautifulsoup4 \
-  chardet
+  chardet \
+  esprima \
+  tree_sitter \
+  "tree_sitter_languages @ git+https://github.com/grantjenks/py-tree-sitter-languages"
 source .venv/bin/activate
 ```
 
@@ -46,6 +49,7 @@ Copy the RAG corpus documents (text, pdf, markdown, and html are all acceptable 
 
 ```sh
 source .venv/bin/activate # if the enviroment is not already active
+export PYTHONWARNINGS="ignore"
 uv run main.py
 
 RAGConfig:
