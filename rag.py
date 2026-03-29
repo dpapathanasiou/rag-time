@@ -110,33 +110,6 @@ class RAGConfig:
         """
 
 
-"""
-def load_corpus(corpus_folder: Path):
-    docs = []
-    names = []
-    for p in corpus_folder.glob("**/*"):
-        file_ext = p.suffix.lower()
-        if file_ext in SOURCE_CODE.keys():
-            names.append(f" - {p.name}")
-            docs.extend(
-                GenericLoader.from_filesystem(p, parser=LanguageParser()).load()
-            )
-        elif file_ext in {".pdf", ".css", ".htm", ".html", ".md", ".txt", ".text"}:
-            names.append(f" - {p.name}")
-            match file_ext:
-                case ".pdf":
-                    docs.extend(PyPDFLoader(p).load())
-                case ".css" | ".htm" | ".html":
-                    docs.extend(BSHTMLLoader(p).load())
-                case ".md":
-                    docs.extend(UnstructuredMarkdownLoader(p).load())
-                case _:
-                    docs.extend(TextLoader(p, autodetect_encoding=True).load())
-    print(f"Corpus files:\n{chr(10).join(names)}\n")
-    return docs
-"""
-
-
 def load_corpus(corpus_folder: Path):
     docs = defaultdict(list)  # k=file extension, v=list of loaded docs
     corpus_files = []
