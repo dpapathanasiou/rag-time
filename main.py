@@ -47,12 +47,19 @@ if __name__ == "__main__":
         type=bool,
         default=False,
     )
+    parser.add_argument(
+        "--prompt",
+        help="path to the file containing the base prompt (as plain text)",
+        type=str,
+        default=None,
+    )
     args = parser.parse_args()
     config = RAGConfig(
         args.chunk_size,
         args.chunk_overlap,
         args.collection_name,
         args.retrieval_keys,
+        args.prompt,
     )
     print(config)
     vector_store = rebuild_index(config, force=args.force_index_rebuild)

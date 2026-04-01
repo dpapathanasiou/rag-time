@@ -60,6 +60,7 @@ class RAGConfig:
         chunk_overlap=None,
         collection_name=None,
         retrieval_keys=None,
+        base_prompt=None,
     ):
         self.base_model = getenv("BASE_MODEL", "gpt-oss")
         self.embed_model = getenv("EMBED_MODEL", "embeddinggemma")
@@ -88,6 +89,13 @@ class RAGConfig:
 
         self.chunk_size = 800 if chunk_size is None else chunk_size
         self.chunk_overlap = 100 if chunk_overlap is None else chunk_overlap
+
+        if base_prompt is None:
+            prompt_path = Path.cwd() / "prompts" / "default_prompt.txt"
+            self.base_prompt = prompt_path.read_text()
+        else:
+            prompt_path = Path(base_prompt)
+            self.base_prompt = prompt_path.read_text()
 
     def get_base_model(self):
         return OllamaLLM(model=self.base_model)
@@ -176,12 +184,8 @@ def rebuild_index(config: RAGConfig, force=False):
 
 def create_rag_chain(config: RAGConfig):
     prompt = ChatPromptTemplate.from_template(
-        """
-        You are an efficient, diligent, and helpful assistant.  Please
-        attempt to answer the user's question here, using the context
-        provided. If the answer is not in the context, please just say you
-        don't know.
-
+        config.base_prompt
+        + """
         Context:
         {context}
 
