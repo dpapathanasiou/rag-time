@@ -186,6 +186,7 @@ def create_rag_chain(config: RAGConfig):
     prompt = ChatPromptTemplate.from_template(
         config.base_prompt
         + """
+
         Context:
         {context}
 
