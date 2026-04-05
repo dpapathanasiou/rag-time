@@ -115,6 +115,8 @@ class RAGConfig:
         chunk_overlap\t= {self.chunk_overlap}
         collection_name\t= {self.collection_name}
         retrieval_keys\t= {self.retrieval_keys}
+
+        base_prompt\t= `{self.base_prompt[:50]}` ...
         """
 
 
