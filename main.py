@@ -13,7 +13,7 @@ def cli(rag_chain):
                 continue
             answer = rag_chain.invoke(q)
             print(f"\n{answer}\n")
-        except KeyboardInterrupt:
+        except KeyboardInterrupt, EOFError:
             print("\nGoodbye!")
             break
 
